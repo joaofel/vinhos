@@ -1,13 +1,14 @@
 # vinhos
 Aplicação de estudo - Cadastro de Vinhos
 
-Desenvolvimento para aprendizado de todos os pacotes Spring.
+Desenvolvimento para aprendizado do framework Spring.
 
 Ferramentas utilizadas:
 - Spring Boot;
 - Spring Security;
 - Thymeleaf;
 - JAVA 8;
+- H2;
 
 Pendencias:
 - Gravar no banco de dados fisico.
