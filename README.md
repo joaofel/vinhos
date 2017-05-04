@@ -1,7 +1,7 @@
 # vinhos
-Aplicação de estudo - Cadastro de Vinhos
-
 Desenvolvimento para aprendizado do framework Spring.
+
+Aplicação de estudo - Cadastro de Vinhos
 
 Ferramentas utilizadas:
 - Spring Boot;
