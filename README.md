@@ -6,13 +6,14 @@ Aplicação de estudo - Cadastro de Vinhos
 Ferramentas utilizadas:
 - Spring Boot;
 - Spring Security;
+- Spring JPA;
 - Thymeleaf;
 - JAVA 8;
 - H2;
 
-Pendencias:
-- Gravar no banco de dados fisico.
-- Buscar permissoes do banco de dados.
+Pendências:
+- Gravar no banco de dados físico.
+- Buscar permissões do banco de dados.
 
 Funcionamento:
 
