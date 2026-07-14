@@ -1,11 +1,12 @@
 package com.joaofeliciano.vinhos.controller;
 
-import java.util.Optional;
+import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,20 +51,23 @@ public class VinhosController {
 	@GetMapping
 	public ModelAndView pesquisar(VinhoFilter vinhoFilter) {
 		ModelAndView mv = new ModelAndView("vinho/pesquisa-vinhos");
-		mv.addObject("vinhos", vinhos.findByNomeContainingIgnoreCase(
-				Optional.ofNullable(vinhoFilter.getNome()).orElse("%")));
+		String nome = vinhoFilter.getNome();
+		List<Vinho> resultado = StringUtils.hasText(nome)
+				? vinhos.findByNomeContainingIgnoreCase(nome)
+				: vinhos.findAll();
+		mv.addObject("vinhos", resultado);
 		return mv;
 	}
 	
 	@GetMapping("/{codigo}")
 	public ModelAndView editar(@PathVariable Long codigo) {
-		Vinho vinho	= vinhos.findOne(codigo);
+		Vinho vinho	= vinhos.findById(codigo).orElseThrow();
 		return novo(vinho);
 	}
-	
+
 	@DeleteMapping("/{codigo}")
 	public String deletar(@PathVariable Long codigo, RedirectAttributes attributes) {
-		vinhos.delete(codigo);
+		vinhos.deleteById(codigo);
 		attributes.addFlashAttribute("mensagem", "Vinho removido com sucesso!");
 		return "redirect:/vinhos";
 	}
