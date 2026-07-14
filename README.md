@@ -4,12 +4,13 @@ Desenvolvimento para aprendizado do framework Spring.
 Aplicação de estudo - Cadastro de Vinhos
 
 Ferramentas utilizadas:
-- Spring Boot;
-- Spring Security;
-- Spring JPA;
-- Thymeleaf;
-- JAVA 8;
+- Spring Boot 3.5;
+- Spring Security 6;
+- Spring Data JPA;
+- Thymeleaf 3.1;
+- JAVA 21;
 - H2;
+- JUnit 5;
 
 Pendências:
 - Gravar no banco de dados físico.

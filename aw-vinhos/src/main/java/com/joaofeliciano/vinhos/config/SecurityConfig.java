@@ -1,41 +1,54 @@
 package com.joaofeliciano.vinhos.config;
 
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+@Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter{
-	
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication()
-			.withUser("joao").password("joao").roles("PESQUISAR_VINHO").and()
-			.withUser("maria").password("maria").roles("CADASTRAR_VINHO", "PESQUISAR_VINHO");
+public class SecurityConfig {
+
+	@Bean
+	public UserDetailsService userDetailsService() {
+		UserDetails joao = User.withUsername("joao")
+				.password("{noop}joao")
+				.roles("PESQUISAR_VINHO")
+				.build();
+
+		UserDetails maria = User.withUsername("maria")
+				.password("{noop}maria")
+				.roles("CADASTRAR_VINHO", "PESQUISAR_VINHO")
+				.build();
+
+		return new InMemoryUserDetailsManager(joao, maria);
 	}
-	
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring()
-		.antMatchers("/layout/**");
+
+	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return web -> web.ignoring().requestMatchers("/layout/**");
 	}
-	
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
-			.authorizeRequests()
-				.antMatchers("/vinhos").hasRole("PESQUISAR_VINHO")
-				.antMatchers("/vinhos/**").hasRole("CADASTRAR_VINHO")
-				.anyRequest().authenticated()
-				.and()
-			.formLogin()
+			.authorizeHttpRequests(authorize -> authorize
+				.requestMatchers("/vinhos").hasRole("PESQUISAR_VINHO")
+				.requestMatchers("/vinhos/**").hasRole("CADASTRAR_VINHO")
+				.anyRequest().authenticated())
+			.formLogin(form -> form
 				.loginPage("/login")
-				.permitAll()
-				.and()
-			.logout()
-				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
+				.permitAll())
+			.logout(logout -> logout
+				.logoutRequestMatcher(new AntPathRequestMatcher("/logout")));
+
+		return http.build();
 	}
 }
