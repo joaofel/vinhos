@@ -140,6 +140,17 @@ class VinhosControllerTest {
 
 	@Test
 	@WithMockUser(username = "maria", roles = "CADASTRAR_VINHO")
+	void edicaoDeVinhoInexistenteRetorna404() throws Exception {
+		when(vinhos.findById(99L)).thenReturn(Optional.empty());
+
+		mockMvc.perform(get("/vinhos/99"))
+				.andExpect(status().isNotFound());
+
+		verify(vinhos).findById(99L);
+	}
+
+	@Test
+	@WithMockUser(username = "maria", roles = "CADASTRAR_VINHO")
 	void removeVinhoViaMetodoDelete() throws Exception {
 		mockMvc.perform(post("/vinhos/1").with(csrf())
 						.param("_method", "DELETE"))
